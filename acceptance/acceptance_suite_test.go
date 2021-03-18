@@ -193,7 +193,7 @@ func installSeldon() {
 }
 
 func printClusterInfo() {
-	_, err := RunProc("df -h; kubectl get pods -A; kubectl top nodes; kubectl top pods -A; kubectl describe nodes; kubectl describe pods -A", "..", true)
+	_, err := RunProc("df -h; kubectl get pods -A; kubectl top nodes; kubectl top pods -A; kubectl describe nodes; kubectl describe pods -A; kubectl -n fuseml-workloads logs -l eventlistener=mlflow-listener", "..", true)
 	if err != nil {
 		panic("Getting kubernetes info failed: " + err.Error())
 	}
