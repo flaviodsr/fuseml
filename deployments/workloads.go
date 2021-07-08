@@ -136,11 +136,8 @@ func (w Workloads) createWorkloadsNamespace(c *kubernetes.Cluster, ui *ui.UI, op
 		context.Background(),
 		&corev1.Namespace{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: WorkloadsDeploymentID,
-				Labels: map[string]string{
-					"quarks.cloudfoundry.org/monitored": "quarks-secret",
-					kubernetes.FusemlDeploymentLabelKey: kubernetes.FusemlDeploymentLabelValue,
-				},
+				Name:   WorkloadsDeploymentID,
+				Labels: map[string]string{kubernetes.FusemlDeploymentLabelKey: kubernetes.FusemlDeploymentLabelValue},
 			},
 		},
 		metav1.CreateOptions{},
@@ -152,9 +149,6 @@ func (w Workloads) createWorkloadsNamespace(c *kubernetes.Cluster, ui *ui.UI, op
 		return err
 	}
 	if err := w.createGiteaCredsSecret(c, options); err != nil {
-		return err
-	}
-	if err := w.createClusterRegistryCredsSecret(c); err != nil {
 		return err
 	}
 	if err := w.createWorkloadsServiceAccountWithSecretAccess(c); err != nil {
@@ -202,32 +196,6 @@ func (w Workloads) deleteWorkloadsNamespace(c *kubernetes.Cluster, ui *ui.UI) er
 		ui.Exclamation().Msg(warning)
 	}
 
-	return nil
-}
-
-func (w Workloads) createClusterRegistryCredsSecret(c *kubernetes.Cluster) error {
-	// TODO: Are all of these really used? We need tekton to be able to access
-	// the registry and also kubernetes (when we deploy our app deployments)
-	auths := `{ "auths": {
-		"https://127.0.0.1:30500":{"auth": "YWRtaW46cGFzc3dvcmQ=", "username":"admin","password":"password"},
-		"http://127.0.0.1:30501":{"auth": "YWRtaW46cGFzc3dvcmQ=", "username":"admin","password":"password"},
-		 "registry.fuseml-registry":{"username":"admin","password":"password"},
-		 "registry.fuseml-registry:444":{"username":"admin","password":"password"} } }`
-
-	_, err := c.Kubectl.CoreV1().Secrets(WorkloadsDeploymentID).Create(context.Background(),
-		&corev1.Secret{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: "registry-creds",
-			},
-			StringData: map[string]string{
-				".dockerconfigjson": auths,
-			},
-			Type: "kubernetes.io/dockerconfigjson",
-		}, metav1.CreateOptions{})
-
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
