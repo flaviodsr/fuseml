@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ remove_quarks_tls ]
     paths-ignore:
       - docs/**
       - README.md
@@ -126,3 +126,11 @@ jobs:
       - name: Run mlflow-e2e
         run: |
           make mlflow-e2e
+
+      - name: Debug
+        if: always()
+        run: |
+          kubectl describe pods -n fuseml-workloads -l tekton.dev/pipeline=mlflow-sklearn-e2e
+          echo
+          echo "=============LOGS::::============"
+          kubectl logs -n fuseml-workloads -l tekton.dev/pipeline=mlflow-sklearn-e2e --all-containers=true
