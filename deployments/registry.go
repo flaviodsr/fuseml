@@ -120,6 +120,12 @@ trow:
   domain: registry.%s
 
 fullnameOverride: registry
+
+volumeClaim:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 5Gi
 `, RegistryDeploymentID)
 
 	configPath, err := helpers.CreateTmpFile(config)
