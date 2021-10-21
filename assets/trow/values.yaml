@@ -36,6 +36,9 @@ services:
     - name: registry
       port: 80
       targetPort: http
+    - name: registry-https
+      port: 443
+      targetPort: 443
 
 ingress:
   enabled: false
