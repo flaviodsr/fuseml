@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - release-*
+      - reg_ci_debug
     paths-ignore:
       - docs/**
       - README.md
@@ -26,64 +27,64 @@ on:
       - install.sh
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
+  # lint:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16'
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: '^1.16'
 
-      - name: Cache Go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ github.job }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ github.job }}-${{ runner.os }}-go
+  #     - name: Cache Go modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/go/pkg/mod
+  #         key: ${{ github.job }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #           ${{ github.job }}-${{ runner.os }}-go
 
-      - name: Lint
-        run: |
-          make lint
+  #     - name: Lint
+  #       run: |
+  #         make lint
 
-  unit-tests:
-    runs-on: ubuntu-latest
+  # unit-tests:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16'
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: '^1.16'
 
-      - name: Cache Go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ github.job }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ github.job }}-${{ runner.os }}-go-
+  #     - name: Cache Go modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/go/pkg/mod
+  #         key: ${{ github.job }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #           ${{ github.job }}-${{ runner.os }}-go-
 
-      - name: Setup Ginkgo Test Framework
-        run: |
-          go get -u github.com/onsi/ginkgo/ginkgo
+  #     - name: Setup Ginkgo Test Framework
+  #       run: |
+  #         go get -u github.com/onsi/ginkgo/ginkgo
 
-      - name: Run unit tests
-        run: |
-          make test
+  #     - name: Run unit tests
+  #       run: |
+  #         make test
 
   e2e:
     name: "${{ matrix.target }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["kfserving", "seldon", "ovms"]
+        target: ["kfserving"]
 
     steps:
       - name: Free disk space

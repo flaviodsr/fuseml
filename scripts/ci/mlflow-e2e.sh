@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-CODESETS="sklearn tensorflow onnx"
+CODESETS="sklearn"
 WORKFLOW="mlflow-e2e"
 PREDICTION_ENGINE="kfserving"
 : ${RELEASE_BRANCH:="main"}
@@ -63,7 +63,7 @@ if ! git describe --tags --exact-match &> /dev/null; then
         git reset --hard origin/${RELEASE_BRANCH}
         git clean -f -d
     else
-        git clone -b ${RELEASE_BRANCH} https://github.com/fuseml/fuseml-core.git
+        git clone https://github.com/fuseml/fuseml-core.git
         cd fuseml-core
     fi
     make deps generate build_client
@@ -85,7 +85,7 @@ if [ -d "fuseml-examples" ]; then
     git clean -f -d
     cd ..
 else
-    git clone -b ${RELEASE_BRANCH} https://github.com/fuseml/examples.git fuseml-examples
+    git clone https://github.com/fuseml/examples.git fuseml-examples
 fi
 
 for cs in ${CODESETS}; do
@@ -112,6 +112,8 @@ for cs in ${CODESETS}; do
     wait_for_run ${retries} ${cs} &
 done
 wait
+
+kubectl logs -n fuseml-workloads -l tekton.dev/pipelineTask=builder
 
 print_bold "➤ List Applications:"
 ./fuseml application list
