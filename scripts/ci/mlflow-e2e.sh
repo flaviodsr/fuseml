@@ -98,7 +98,7 @@ print_bold "➤ Create Workflow: ${WORKFLOW}"
 if ./fuseml workflow get -n ${WORKFLOW} &> /dev/null; then
     ./fuseml workflow delete -n ${WORKFLOW}
 fi
-./fuseml workflow create fuseml-examples/workflows/${WORKFLOW}.yaml
+./fuseml workflow create ${WORKFLOW}.yaml
 
 for cs in $CODESETS; do
     print_bold "➤ Assign Workflow to Codeset: ${cs}"
