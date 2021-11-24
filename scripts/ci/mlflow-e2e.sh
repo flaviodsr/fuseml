@@ -70,6 +70,8 @@ if ! git describe --tags --exact-match &> /dev/null; then
     mv bin/fuseml ../fuseml
     cd ..
     rm -rf fuseml-core
+else
+    RELEASE_BRANCH=release-$(echo $RELEASE_BRANCH | grep -oP "\d.\d")
 fi
 
 
